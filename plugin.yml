@@ -1,0 +1,8 @@
+name: SurfPvP
+main: Main.Main
+version: 1.0
+author: im4youplay
+commands:
+     surf:
+          description: Surf Commands
+          aliases: [s, surfpvp]
