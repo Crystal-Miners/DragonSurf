@@ -2,13 +2,13 @@ package Main;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import Main.Main;
 
@@ -22,7 +22,7 @@ public class CMS {
 		file = new File(plugin.getDataFolder(), "Arenas.yml");
 		load();
 		saveConf();
-		
+		InitalizeConfig();
 	}
 	
 	public void load() { 
@@ -45,15 +45,32 @@ public class CMS {
 		   	}
 		 }
 		  
-		  
-		  
+ public String getDefaultArena(){
+	 return cfg.getString("DefaultArena");
+ }
+ public void InitalizeConfig(){
+	 if(cfg.getString("Prefix") == null){
+		 cfg.set("Prefix", "");
+		 cfg.set("DefaultArena", "None");
+	 }
+ }
 		 
- public void addChannel(String name, Location loc) {
+ public void addArena(String name, Location loc) {
 	 String c = "Arenas.";
+	 cfg.set(c + name + ".Name", name);
 	 cfg.set(c + name + ".World", loc.getWorld());
 	 cfg.set(c + name + ".X", loc.getX());
 	 cfg.set(c + name + ".Y", loc.getY());
 	 cfg.set(c + name + ".Z", loc.getZ());
+	 cfg.set(c + name + ".Kit", new String[] {
+			 "302,1",
+			 "303,1",
+			 "304,1",
+			 "305,1",
+			 "267,1",
+			 "261,1",
+			 "262,64",
+	 });
 	saveConf();
 } 
  
@@ -64,24 +81,24 @@ public String getArena(String name){
 	return (String) cfg.get(c + name + ".Name");
 }
 
-public Object getChannelData(String Channel, Object ChannelData){
+public Object getArenaData(String Arena, Object ArenaData){
 	load();
 	 String c = "Arenas.";
 	
-	return cfg.get(c + Channel + "." + ChannelData );
+	return cfg.get(c + Arena + "." + ArenaData );
 }
-public Integer getArenaInt(String Channel, Object ChannelData){
+public Integer getArenaInt(String Arena, Object ArenaData){
 	load();
 	 String c = "Arenas.";
 	
-	return (Integer) cfg.get(c + Channel + "." + ChannelData );
+	return (Integer) cfg.get(c + Arena + "." + ArenaData );
 }
 
-public boolean getArenaBoolean(String Channel, Object ChannelData){
+public boolean getArenaBoolean(String Arena, Object ArenaData){
 	load();
 	 String c = "Arenas.";
 	
-	return cfg.getBoolean(c + Channel + "." + ChannelData );
+	return cfg.getBoolean(c + Arena + "." + ArenaData );
 }
 
 public void DeleteArena(String name){
@@ -90,25 +107,35 @@ cfg.set("Arenas." + name, null);
 saveConf();
 }
 
-public void SetChannelData(String Channel, Object ChannelData, String Value){
+public void SetArenaData(String Arena, Object ArenaData, String Value){
 	load();
 	String c = "Arenas.";
-	if(cfg.get(c + Channel + "." + ChannelData) instanceof Boolean){
-		cfg.set(c + Channel + "." + ChannelData, Boolean.valueOf(Value));
+	if(cfg.get(c + Arena + "." + ArenaData) instanceof Boolean){
+		cfg.set(c + Arena + "." + ArenaData, Boolean.valueOf(Value));
 		saveConf();
 		return;
 	}
-	if(cfg.get(c + Channel + "." + ChannelData) instanceof Integer){
-		cfg.set(c + Channel + "." + ChannelData, Integer.valueOf(Value));
+	if(cfg.get(c + Arena + "." + ArenaData) instanceof Integer){
+		cfg.set(c + Arena + "." + ArenaData, Integer.valueOf(Value));
 		saveConf();
 		return;
 	}
-	cfg.set(c + Channel + "." + ChannelData, Value);
+	cfg.set(c + Arena + "." + ArenaData, Value);
 	saveConf();
 }
 
-public Set<String> channelList(){
+public Set<String> ArenaList(){
 	Set<String> list = cfg.getConfigurationSection("Arenas").getKeys(false);
 	return list;
 }
+
+public Location getArenaLocation(String Arena){	 
+String c = "Arenas.";
+	World w = Bukkit.getWorld(cfg.getString(c + Arena + ".World"));
+	double x = cfg.getDouble(c + Arena + ".X");
+	double y = cfg.getDouble(c + Arena + ".Y");
+	double z = cfg.getDouble(c + Arena + ".Z");
+	Location loc = new Location(w, x, y, z);
+	return loc;
+	}
 }
