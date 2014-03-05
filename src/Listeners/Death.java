@@ -1,11 +1,13 @@
 package Listeners;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import java.util.List;
+
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import Main.Main;
@@ -17,32 +19,45 @@ public class Death implements Listener {
 		this.pl = pl;
 	}
 	/*     */ 
-	@SuppressWarnings("deprecation")
 	/*     */   @EventHandler
 	/*     */   public void onPlayerDeath(PlayerDeathEvent event) {
 	/* 173 */     CraftPlayer ep = (CraftPlayer) event.getEntity();
-	CraftPlayer ek = (CraftPlayer) ep.getKiller();
-	/* 174 */     if (pl.getConfig().getBoolean("Player." + ep.getName() + ".Playing")) {
 	/* 175 */       event.setDroppedExp(0);
 	/* 176 */       ep.setLevel(0);
-	/* 177 */       event.setDeathMessage("§7[§bDragonSurf§7] §c" + ek.getName() + " §ahat §c" + ep.getName() + " §agekillt");
 	/* 178 */       event.getDrops().clear();
-	/* 179 */       int l = ep.getKiller().getLevel() + 1;
-	/* 180 */       ep.getKiller().setLevel(l);
-	/* 183 */       ep.getKiller().setHealth(ek.getHealth() + 10);
 					ep.setHealth(20.0D);
-	/* 248 */       int Arena = pl.getConfig().getInt("ActiveArena");
-	/* 249 */       Location Spawn = new Location(Bukkit.getWorld(pl.getConfig().getString("Arena." + Arena + ".World")), pl.getConfig().getInt("Arena." + Arena + ".X"), pl.getConfig().getInt("Arena." + Arena + ".Y"), pl.getConfig().getInt("Arena." + Arena + ".Z"));
-	/*     */ 
-	/* 251 */       ep.getInventory().addItem(new ItemStack[] { new ItemStack(276) });
-	/* 252 */       ep.getInventory().setHelmet(new ItemStack(302));
-	/* 253 */       ep.getInventory().setChestplate(new ItemStack(303));
-	/* 254 */       ep.getInventory().setLeggings(new ItemStack(304));
-	/* 255 */       ep.getInventory().setBoots(new ItemStack(305));
-	/* 256 */       ep.getInventory().addItem(new ItemStack[] { new ItemStack(261) });
-	/* 257 */       ep.getInventory().addItem(new ItemStack[] { new ItemStack(262, 32) });
-	ep.teleport(Spawn);
-	/*     */     }
+					if(ep.getKiller() instanceof CraftPlayer){
+						CraftPlayer ek = (CraftPlayer) ep.getKiller();
+						/* 179 */       int l = ep.getKiller().getLevel() + 1;
+						/* 180 */       ek.setLevel(l);
+						/* 183 */       ek.setHealth(ek.getHealth() + 10);
+					}
 	/*     */   }
+	
+	@EventHandler
+	public void onRespawn(PlayerRespawnEvent e){
+		e.setRespawnLocation(pl.cms.getArenaLocation(pl.Active));
+		@SuppressWarnings("unchecked")
+		List<String> messages = (List<String>) pl.cms.getArenaData(pl.Active , "Kit");
+		for(String m : messages){
+			String[] split = m.split(",");
+			@SuppressWarnings("deprecation")
+			ItemStack i = new ItemStack(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
+			if(i.getType() == Material.CHAINMAIL_HELMET || i.getType() == Material.LEATHER_HELMET || i.getType() == Material.IRON_HELMET || i.getType() == Material.GOLD_HELMET || i.getType() == Material.DIAMOND_HELMET){
+				e.getPlayer().getInventory().setHelmet(i);
+			}
+			if(i.getType() == Material.CHAINMAIL_BOOTS || i.getType() == Material.LEATHER_BOOTS || i.getType() == Material.IRON_BOOTS || i.getType() == Material.GOLD_BOOTS || i.getType() == Material.DIAMOND_BOOTS){
+				e.getPlayer().getInventory().setBoots(i);
+			}
+			if(i.getType() == Material.CHAINMAIL_LEGGINGS || i.getType() == Material.LEATHER_LEGGINGS || i.getType() == Material.IRON_LEGGINGS || i.getType() == Material.GOLD_LEGGINGS || i.getType() == Material.DIAMOND_LEGGINGS){
+				e.getPlayer().getInventory().setLeggings(i);	
+			}
+			if(i.getType() == Material.CHAINMAIL_CHESTPLATE || i.getType() == Material.LEATHER_CHESTPLATE || i.getType() == Material.IRON_CHESTPLATE || i.getType() == Material.GOLD_CHESTPLATE || i.getType() == Material.DIAMOND_CHESTPLATE){
+				e.getPlayer().getInventory().setChestplate(i);	
+				return;
+			}
+			e.getPlayer().getInventory().addItem(i);
+		}
+	}
 
 }

@@ -2,6 +2,7 @@ package Main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -58,7 +59,7 @@ public class CMS {
  public void addArena(String name, Location loc) {
 	 String c = "Arenas.";
 	 cfg.set(c + name + ".Name", name);
-	 cfg.set(c + name + ".World", loc.getWorld());
+	 cfg.set(c + name + ".World", loc.getWorld().getName());
 	 cfg.set(c + name + ".X", loc.getX());
 	 cfg.set(c + name + ".Y", loc.getY());
 	 cfg.set(c + name + ".Z", loc.getZ());
@@ -138,4 +139,9 @@ String c = "Arenas.";
 	Location loc = new Location(w, x, y, z);
 	return loc;
 	}
+
+public List<String> getArenaList(){
+	String c = "Arenas.";
+	return cfg.getStringList(c);
+}
 }
