@@ -2,7 +2,6 @@ package Main;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -139,9 +138,4 @@ String c = "Arenas.";
 	Location loc = new Location(w, x, y, z);
 	return loc;
 	}
-
-public List<String> getArenaList(){
-	String c = "Arenas.";
-	return cfg.getStringList(c);
-}
 }

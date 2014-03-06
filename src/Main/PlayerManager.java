@@ -1,7 +1,10 @@
 package Main;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,6 +17,8 @@ public class PlayerManager {
 	}
 
 	public void switchKit(Player p){
+		p.getInventory().clear();
+		p.getInventory().setArmorContents(new ItemStack[4]);
 		@SuppressWarnings("unchecked")
 		List<String> messages = (List<String>) pl.cms.getArenaData(pl.Active , "Kit");
 		for(String m : messages){
@@ -37,18 +42,31 @@ public class PlayerManager {
 		}
 	}
 	
-	public void switchArena(Player p){
-		@SuppressWarnings("unchecked")
-		List<String> arenas = (List<String>) pl.cms.ArenaList();
+	public void switchArena(){
+		Set<String> arenas1 = pl.cms.ArenaList();
+		ArrayList<String> arenas = new ArrayList<String>();
+		for(String a : arenas1){
+			arenas.add(a);
+		}
 		int max = arenas.size();
 		String Arena = null;
-		if(max == pl.current){
+		if(max <= pl.current){
 			pl.current = 1;
+			Arena = arenas.get(pl.current -1);
+			pl.Active = Arena;
+			for(Player p : Bukkit.getOnlinePlayers()){
+			p.teleport(pl.cms.getArenaLocation(pl.Active));
+			switchKit(p);
+			}
+			return;
 		}
-		Arena = arenas.get(pl.current);
+		pl.current ++;
+		Arena = arenas.get(pl.current -1);
 		pl.Active = Arena;
+		for(Player p : Bukkit.getOnlinePlayers()){
 		p.teleport(pl.cms.getArenaLocation(pl.Active));
 		switchKit(p);
+		}
 		
 	}
 	

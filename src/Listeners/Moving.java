@@ -13,19 +13,14 @@ public class Moving implements Listener {
 	public Moving(Main pl){
 		this.pl = pl;
 	}
-	/*     */ 
-	/*     */   @EventHandler
-	/*     */   public void Move(PlayerMoveEvent event)
-	/*     */   {
-	/* 205 */     Player ep = event.getPlayer();
-	/* 206 */     if (pl.getConfig().getBoolean("Player." + ep.getName() + ".Playing")) {
-	/* 207 */       ep.setFoodLevel(20);
+ 
+	@EventHandler
+	public void Move(PlayerMoveEvent event) {
+	Player ep = event.getPlayer();
+	ep.setFoodLevel(20);
     Material m = event.getPlayer().getLocation().getBlock().getType();
     if (m == Material.STATIONARY_WATER || m == Material.WATER) {
-
-    	/* 210 */         ep.setVelocity(ep.getVelocity().setY(10));
+     ep.setVelocity(ep.getVelocity().setY(10));
     }
-	/*     */     }
-	/*     */   }
-
+  }
 }

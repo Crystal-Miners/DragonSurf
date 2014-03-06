@@ -1,7 +1,5 @@
 package Main;
 
-import java.util.ArrayList;
-
 import org.bukkit.entity.Player;
 
 public class ChatManager {
@@ -16,8 +14,8 @@ public class ChatManager {
 		p.sendMessage(Prefix + "§c" + m);
 	}
 
-	public void sendBroadcast(ArrayList<Player> list, String m){
-		for(Player p : list){
+	public void sendBroadcast(Player[] players, String m){
+		for(Player p : players){
 		p.sendMessage(Prefix + m);
 		}
 	}

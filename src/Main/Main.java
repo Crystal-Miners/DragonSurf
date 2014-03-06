@@ -20,6 +20,7 @@ public class Main extends JavaPlugin {
 	public int current = 1;
 	public CMS cms;
 	ChatManager cm = new ChatManager();
+	PlayerManager pm = new PlayerManager(this);
 	public Main pl;
 	ArrayList<Player> players = new ArrayList<Player>();
 	public String Active = null;
@@ -45,6 +46,11 @@ public class Main extends JavaPlugin {
 				if (args[0].equalsIgnoreCase("leave")) {
 					cm.sendMessage(p, "Du hast Surf verlassen");
 					p.getInventory().clear();
+				}
+				
+				if (args[0].equalsIgnoreCase("switch")) {
+					cm.sendBroadcast(Bukkit.getOnlinePlayers(), "Die Arena wird gewechselt");
+					pm.switchArena();
 				}
 
 			if (args[0].equalsIgnoreCase("join")) {
@@ -91,6 +97,15 @@ public class Main extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new Interact(this), this);
 		Bukkit.getPluginManager().registerEvents(new ServerPing(this), this);
 		Active = cms.getDefaultArena();
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+
+			@Override
+			public void run() {
+				cm.sendBroadcast(Bukkit.getOnlinePlayers(), "Die Arena wird gewechselt");
+				pm.switchArena();
+			}
+			
+		}, 0L, 60*20);
 	}
 
 }
